@@ -1,33 +1,30 @@
-# $Id: PKGBUILD 224121 2014-10-08 19:52:58Z bpiotrowski $
-# Maintainer: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+# $Id: PKGBUILD 249759 2015-10-25 19:33:24Z bpiotrowski $
+# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 # Contributor: Kovivchak Evgen <oneonfire@gmail.com>
 
 pkgname=jemalloc
-pkgver=3.6.0
+pkgver=4.0.4
 pkgrel=1
-pkgdesc="General-purpose scalable concurrent malloc implementation"
+pkgdesc='General-purpose scalable concurrent malloc implementation'
 arch=('i686' 'x86_64')
 license=('BSD')
-url="http://www.canonware.com/jemalloc/"
+url='http://www.canonware.com/jemalloc/'
 depends=('glibc')
-makedepends=('autoconf' 'make' 'bash')
-optdepends=(
-	'perl: memory profiler'
-)
+provides=('libjemalloc.so')
+optdepends=('perl: for jeprof')
 source=(http://www.canonware.com/download/jemalloc/$pkgname-$pkgver.tar.bz2)
+md5sums=('687c5cc53b9a7ab711ccd680351ff988')
 
 build() {
-	cd "$srcdir/$pkgname-$pkgver"
-	CFLAGS="$CFLAGS -std=gnu11" ./configure --prefix=/usr
-	make
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
 }
 
 package() {
-	cd "$srcdir/$pkgname-$pkgver"
-	make DESTDIR="$pkgdir" install
-	mv "$pkgdir"/usr/bin/{,jemalloc-}pprof
-	chmod 644 "$pkgdir"/usr/lib/*.a
-	install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  find "$pkgdir" -name \*.a -type f -exec chmod 644 '{}' \;
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
-
-sha256sums=('e16c2159dd3c81ca2dc3b5c9ef0d43e1f2f45b04548f42db12e7c12d7bdf84fe')
